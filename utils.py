@@ -34,13 +34,4 @@ def createDeltaTable(data_df, db_name, table_name, table_path):
 
 # COMMAND ----------
 
-for item in dataset_endpoints:
-    print(item)
-    data_df = getDatasetAsCSV(dataset_endpoints[item])
-    table_path = f"/mnt/dbstables/{db_name}/{item}/"
-    createDeltaTable(data_df, db_name, item, table_path)
-    print()
-
-
-# COMMAND ----------
 
