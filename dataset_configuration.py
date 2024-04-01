@@ -6,6 +6,8 @@ db_name = 'cso'
 dataset_endpoints = {
     'private_households_1_2011_2022': 'https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/F3069/CSV/1.0/en',
     'private_households_2_2011_2022': 'https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/F3035/CSV/1.0/en',
+    'private_households_3_2002': 'https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/B0301/CSV/1.0/en',
+    'private_households_4_2006': 'https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/C0301/CSV/1.0/en',
     'population_1_2011_2022': 'https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/F3027/CSV/1.0/en',
     'population_2_2011_2022': 'https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/F3001/CSV/1.0/en',
     'annual_population_change_1_1951_2023': 'https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/PEA15/CSV/1.0/en',
