@@ -10,3 +10,7 @@ for item in dataset_endpoints:
     createDeltaTable(data_df, db_name, item, table_path)
     print()
 
+
+# COMMAND ----------
+
+

@@ -1,5 +1,6 @@
 # Databricks notebook source
 from pyspark.sql.functions import col
+import re
 
 # COMMAND ----------
 
@@ -56,26 +57,21 @@ average_persons_per_household_df = average_persons_per_household_df_2011_2022.un
 
 # COMMAND ----------
 
+average_persons_per_household_df_columns = average_persons_per_household_df.columns
+for c in average_persons_per_household_df_columns:
+    average_persons_per_household_df = average_persons_per_household_df.withColumnRenamed(c, re.sub(r'[\W_]+', '_', c).lower())
+
+# COMMAND ----------
+
 average_persons_per_household_df.display()
 
 # COMMAND ----------
 
-import matplotlib.pyplot as plt
-import pandas as pd
+# MAGIC %run /Workspace/Users/23079924@studentmail.ul.ie/ireland_housing_demand/utils
 
-pandas_df = average_persons_per_household_df.filter(col('county_and_city').isin(['State', 'Dublin', 'Galway', 'Limerick'])).toPandas()
+# COMMAND ----------
 
-grouped_df = pandas_df.groupby(['county_and_city', 'census_year'])['average_persons_per_household'].mean().unstack()
-
-grouped_df.plot(kind='bar', figsize=(10, 6))
-plt.xlabel('County and City')
-plt.ylabel('Average Persons per Household')
-plt.title('Average Persons per Household by County and City')
-plt.xticks(rotation=45)
-plt.legend(title='Year')
-plt.tight_layout()
-
-plt.show()
+createDeltaTable(average_persons_per_household_df, 'report', 'average_persons_per_household', '/mnt/dbstables/report/average_persons_per_household')
 
 # COMMAND ----------
 

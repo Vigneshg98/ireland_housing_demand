@@ -15,7 +15,8 @@ dataset_endpoints = {
     'estimated_population_2_1950_2023': 'https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/PEA01/CSV/1.0/en',
     'estimated_migration_1_1987_2023': 'https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/PEA03/CSV/1.0/en',
     'estimated_migration_2_1987_2023': 'https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/PEA18/CSV/1.0/en',
-    'average_number_persons_1_2011_2022': 'https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/FY004B/CSV/1.0/en'
+    'average_number_persons_1_2011_2022': 'https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/FY004B/CSV/1.0/en',
+    'permanent_housing_units_1_2011_2022': 'https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/E1068/CSV/1.0/en'
 }
 
 # COMMAND ----------
@@ -23,6 +24,13 @@ dataset_endpoints = {
 # MAGIC %sql
 # MAGIC
 # MAGIC CREATE DATABASE IF NOT EXISTS cso COMMENT 'This holds all the dataset from CSO' LOCATION '/mnt/dbstables/cso'
+# MAGIC
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC
+# MAGIC CREATE DATABASE IF NOT EXISTS report COMMENT 'This holds all the final dataset for the Reports' LOCATION '/mnt/dbstables/report'
 # MAGIC
 
 # COMMAND ----------
