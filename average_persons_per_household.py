@@ -76,3 +76,75 @@ createDeltaTable(average_persons_per_household_df, 'report', 'average_persons_pe
 # COMMAND ----------
 
 
+
+# COMMAND ----------
+
+from pyspark.ml.feature import StringIndexer, OneHotEncoder, VectorAssembler
+from pyspark.ml.regression import LinearRegression
+from pyspark.sql.functions import lit
+
+
+# COMMAND ----------
+
+# Index the county_and_city column
+indexer = StringIndexer(inputCol="county_and_city", outputCol="county_and_city_index")
+indexed_df = indexer.fit(average_persons_per_household_df).transform(average_persons_per_household_df)
+
+# One-hot encode the indexed county_and_city column
+encoder = OneHotEncoder(inputCols=["county_and_city_index"], outputCols=["county_and_city_encoded"])
+encoder_model = encoder.fit(indexed_df)
+encoded_df = encoder_model.transform(indexed_df)
+
+# Define the features including 'census_year' and the encoded 'county_and_city'
+feature_columns = ['census_year', 'county_and_city_encoded']
+
+# Vectorize the features
+vector_assembler = VectorAssembler(inputCols=feature_columns, outputCol="features")
+vectorized_df = vector_assembler.transform(encoded_df)
+
+# Split data into training and testing sets
+(training_data, testing_data) = vectorized_df.randomSplit([0.8, 0.2], seed=1234)
+
+# Create Linear Regression model
+lr = LinearRegression(featuresCol='features', labelCol='average_persons_per_household')
+
+# Train the model
+lr_model = lr.fit(training_data)
+
+# Make predictions on the testing data
+predictions = lr_model.transform(testing_data)
+
+# Predict for the next 4 years for each county_and_city
+future_years = [2023, 2024, 2025, 2026]
+next_years = []
+for year in future_years:
+    # Create DataFrame with next year and each unique county_and_city
+    year_df = spark.createDataFrame([(year, city) for city in average_persons_per_household_df.select("county_and_city").distinct().rdd.map(lambda row: row[0]).collect()], ["census_year", "county_and_city"])
+    
+    # Index and encode the county_and_city column
+    indexed_year_df = indexer.fit(average_persons_per_household_df).transform(year_df)  # Using transform from StringIndexerModel
+    encoded_year_df = encoder_model.transform(indexed_year_df)  # Using transform from OneHotEncoderModel
+    
+    # Vectorize features
+    vectorized_year_df = vector_assembler.transform(encoded_year_df)
+    
+    # Predict average persons per household
+    predictions_year_df = lr_model.transform(vectorized_year_df)
+    
+    # Append predictions for the year
+    next_years.append(predictions_year_df.select("census_year", "county_and_city", "prediction"))
+
+# Concatenate predictions for all years
+all_predictions = next_years[0]
+for i in range(1, len(next_years)):
+    all_predictions = all_predictions.union(next_years[i])
+
+
+# COMMAND ----------
+
+# Show predicted values for the next 4 years for each county_and_city
+all_predictions.orderBy("census_year", "county_and_city").display()
+
+# COMMAND ----------
+
+
