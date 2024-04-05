@@ -43,15 +43,12 @@ data_df_2 = getDatasetAsCSV(dataset_url_2)
 
 data_df_2 = data_df_2.where((col('electoral_divisions') == 'Ireland') & (col('housing_stock') == 'Total housing stock'))
 housing_stock = data_df_2.collect()[0]['value']
-population = spark.sql("SELECT population FROM report.population_component WHERE year = 2022").collect()[0]['population'] * 1000
+population = spark.sql("SELECT population FROM report.population_component WHERE year = 2022").collect()[0]['population']
 housing_stock_change = housing_stock - data_df.select('housing_stock').where(col('census_year') == 2016).collect()[0]['housing_stock']
 population_change = population - data_df.select('population').where(col('census_year') == 2016).collect()[0]['population']
-# _housing_stock_change = (housing_stock_change / (data_df.select('housing_stock').where(col('census_year') == 2016).collect()[0]['housing_stock'])) * 100
-# _population_change = (population_change / (data_df.select('population').where(col('census_year') == 2016).collect()[0]['population'])) * 100
 _housing_stock_change = (housing_stock_change / housing_stock) * 100
 _population_change = (population_change / population) * 100
 dwellings_per_1000_pop = (housing_stock / (population / 1000))
-# _change_dwellings_per_1000_pop = (dwellings_per_1000_pop / (data_df.select('dwellings_per_1000_pop').where(col('census_year') == 2016).collect()[0]['dwellings_per_1000_pop'])) * 100
 dwellings_per_1000_pop_change = dwellings_per_1000_pop - data_df.select('dwellings_per_1000_pop').where(col('census_year') == 2016).collect()[0]['dwellings_per_1000_pop']
 _change_dwellings_per_1000_pop = (dwellings_per_1000_pop_change / dwellings_per_1000_pop) * 100
 
@@ -111,30 +108,4 @@ createDeltaTable(data_df, db_name, "housing_stock_and_population_1991_2022", tab
 print()
 
 # COMMAND ----------
-
-import matplotlib.pyplot as plt
-import numpy as np
-
-pandas_df = data_df.toPandas()
-
-plt.figure(figsize=(10, 6))
-bar_width = 0.35
-index = np.arange(len(pandas_df['census_year']))
-
-plt.bar(index - bar_width/2, pandas_df['housing_stock'], bar_width, color='skyblue', label='Housing Stock')
-plt.bar(index + bar_width/2, pandas_df['population'], bar_width, color='orange', label='Population')
-
-plt.xlabel('Census Year')
-plt.ylabel('Count')
-plt.title('Housing Stock vs. Population by Census Year')
-plt.xticks(index, pandas_df['census_year'])
-plt.legend()
-plt.grid(True)
-plt.tight_layout()
-
-plt.show()
-
-
-# COMMAND ----------
-
 

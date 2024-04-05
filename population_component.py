@@ -17,6 +17,8 @@ population_df = data_df.groupBy("statistic_label", "year").pivot("component").ag
 # Define a window specification over the year column
 windowSpec = Window.orderBy("year")
 
+population_df = population_df.withColumn('Population', col('Population')*1000).withColumn('Natural increase', col('Natural increase')*1000).withColumn('Net migration', col('Net migration')*1000)
+
 # Calculate the lagged value of the Population column
 population_df = population_df.withColumn("Previous Population", lag("Population").over(windowSpec))
 
