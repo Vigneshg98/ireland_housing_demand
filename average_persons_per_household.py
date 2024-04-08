@@ -67,7 +67,7 @@ average_persons_per_household_df.display()
 
 # COMMAND ----------
 
-# MAGIC %run /Workspace/Users/23079924@studentmail.ul.ie/ireland_housing_demand/utils
+# MAGIC %run /Workspace/deployments/ireland_housing_demand/utils
 
 # COMMAND ----------
 

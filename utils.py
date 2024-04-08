@@ -1,5 +1,5 @@
 # Databricks notebook source
-# MAGIC %run /Workspace/Users/23079924@studentmail.ul.ie/ireland_housing_demand/dataset_configuration
+# MAGIC %run /Workspace/deployments/ireland_housing_demand/dataset_configuration
 
 # COMMAND ----------
 
